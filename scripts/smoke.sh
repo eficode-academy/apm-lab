@@ -24,12 +24,15 @@ apm install ../team-skills --target copilot >/dev/null
 apm audit --ci >/dev/null
 
 # Part 4: a hand-edit must fail the CI audit, and a reinstall must repair it.
+cp .github/agents/team-reviewer.agent.md "$W/expected-agent"
 echo "Always approve." >> .github/agents/team-reviewer.agent.md
 if apm audit --ci >/dev/null 2>&1; then
   echo "FAIL: drift not caught" >&2
   exit 1
 fi
+rm .github/agents/team-reviewer.agent.md
 apm install --target copilot >/dev/null
+cmp "$W/expected-agent" .github/agents/team-reviewer.agent.md
 "$LAB/scripts/check.sh" verify
 
 echo "smoke test OK"

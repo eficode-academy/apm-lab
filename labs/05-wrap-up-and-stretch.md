@@ -18,7 +18,7 @@ apm outdated             # local: which dependencies have newer tags
 apm marketplace check    # CI for marketplace authors: fail if an entry cannot resolve
 ```
 
-> ⚠️ Order matters: any `apm install`, `--frozen` included, rewrites deployed files and would hide the drift that `apm audit --ci` is meant to catch (Part 4).
+> ⚠️ Order matters: an `apm install` can overwrite deployed files and hide the drift that `apm audit --ci` is meant to catch (Part 4). Newer APM versions reject edited files in `--frozen` mode instead.
 
 ## Stretch A: ship a new version
 

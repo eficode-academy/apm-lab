@@ -73,7 +73,7 @@ check_verify() {
   check "apm.lock.yaml exists (run this in consumer-test)" "run from consumer-test after the Part 3 install" test -f apm.lock.yaml
   check "apm.yml lists a dependency" "run this in consumer-test, not team-skills" grep -Eq '^[[:space:]]+- ' apm.yml
   check "apm_modules/ is gitignored" "apm adds it on install; check .gitignore" gitignored
-  check "apm audit --ci reports no drift" "run: apm install --target copilot to restore edited files" apm audit --ci
+  check "apm audit --ci reports no drift" "move edited files aside, then run: apm install --target copilot" apm audit --ci
 }
 
 case "${1:-}" in
