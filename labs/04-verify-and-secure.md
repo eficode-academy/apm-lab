@@ -12,7 +12,7 @@ Open `apm.lock.yaml`. For `team-skills` find the resolved commit, the `resolved_
 
 ## 4.2 Restore from the lockfile only
 
-> ⚠️ `--frozen` and any `apm install` also overwrite hand-edits. Do the drift demo in 4.3 and 4.4 **before** any other install, and do not run `check.sh` between them.
+> ⚠️ An install may overwrite hand-edits. Newer APM versions reject edited deployed files in `--frozen` mode instead. Do the drift demo in 4.3 and 4.4 **before** any other install.
 
 ```bash
 rm -rf apm_modules
@@ -53,14 +53,17 @@ echo "exit code: $?"   # expect 1
 
 ## 4.5 Fix it
 
+Before removing the file, inspect it and save any edits you want to keep elsewhere.
+
 ```bash
+rm .github/agents/team-reviewer.agent.md
 apm install --target copilot
 apm audit --ci
 ```
 
-The edited file is restored and the audit is clean.
+The edited file is restored and the audit is clean. In CI, newer APM versions automatically use `--frozen` when a lockfile exists, and refuse to overwrite a modified deployed file.
 
-> Edited a **skill** file instead of the agent? APM leaves hand-edited skill files alone and prints a warning (`Skipped removing ... file has been edited since APM deployed it`). Restore it with `apm install --target copilot --force`.
+> Edited a **skill** file instead of the agent? After saving any edits you need, remove that edited file and run the same install command.
 
 ## 4.6 Hidden characters
 
@@ -74,11 +77,12 @@ apm audit
 Look at the findings table: severity, file, line and the codepoint (`U+202E`). Open the file in your editor and see whether you can spot anything wrong. Then restore:
 
 ```bash
+rm .github/agents/team-reviewer.agent.md
 apm install --target copilot
 apm audit --ci
 ```
 
-> `apm install` refuses to deploy files with critical findings unless you pass `--force`, so a poisoned package is blocked at the door. This demo edits a file already on disk, so the reinstall simply overwrites it.
+> `apm install` refuses to deploy files with critical findings unless you pass `--force`, so a poisoned package is blocked at the door. This demo edits a file already on disk; removing it lets the install restore the package copy.
 
 ## 4.7 Discuss (no commands)
 
