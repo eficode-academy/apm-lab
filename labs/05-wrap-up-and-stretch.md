@@ -1,6 +1,6 @@
 # Part 5: Wrap-up and stretch
 
-> **Time:** ~10 minutes, plus stretch · [Back to overview](../README.md)
+> **Stretch · pick what interests you** · [Back to overview](../README.md)
 
 ## What you built
 
@@ -9,16 +9,16 @@
 - ✅ A second repo that installs it with one command
 - ✅ Lockfile restore and drift detection
 
-## Taking it to a real team
+Where would this fit in your team? [Using APM day to day](../docs/daily-use.md) has four everyday scenarios.
 
-```bash
-apm audit --ci           # CI step 1: drift and security gate. Run it BEFORE any install
-apm install --frozen     # CI step 2: fail if apm.yml and apm.lock.yaml disagree
-apm outdated             # local: which dependencies have newer tags
-apm marketplace check    # CI for marketplace authors: fail if an entry cannot resolve
-```
+## Stretch options
 
-> ⚠️ Order matters: an `apm install` can overwrite deployed files and hide the drift that `apm audit --ci` is meant to catch (Part 4). Newer APM versions reject edited files in `--frozen` mode instead.
+| Option | What you do | Read |
+|--------|-------------|------|
+| A. Ship a new version | Bump `team-skills` to v1.1.0 and update the consumer | below |
+| B. Marketplace | Install by short name instead of a git URL | [marketplace.md](../docs/marketplace.md) |
+| C. MCP server | Declare an MCP server as a dependency | [mcp.md](../docs/mcp.md) |
+| D. Gate a pull request | Write a GitHub Actions job for `apm audit --ci` | [ci-gate.md](../docs/ci-gate.md) |
 
 ## Stretch A: ship a new version
 
@@ -27,57 +27,11 @@ apm marketplace check    # CI for marketplace authors: fail if an entry cannot r
 3. In `consumer-test`, run `apm outdated`, then `apm install <your-handle>/team-skills#v1.1.0 --target copilot`.
 4. Compare the old and new commit in `apm.lock.yaml`.
 
-## Stretch B: publish through a marketplace
-
-A marketplace is a second repo that indexes packages living elsewhere, so consumers install by short name instead of a git URL. You need a second empty GitHub repo, `team-marketplace`, and `team-skills` tagged `v1.0.0` (Part 3).
-
-```bash
-cd ~/apm-work
-git clone https://github.com/<your-handle>/team-marketplace.git
-cd team-marketplace
-apm marketplace init --owner <your-handle> --name team-marketplace
-apm marketplace package add <your-handle>/team-skills --name team-skills --version "^1.0.0"
-```
-
-1. Open `apm.yml`. `init` scaffolds a placeholder `example-package` entry: delete it, or validation fails.
-2. Validate and build the index:
-
-   ```bash
-   apm marketplace check
-   apm pack
-   ```
-
-   `check` resolves every entry against the remote. `pack` writes a `marketplace.json` that pins your range to a concrete tag and commit.
-3. Commit `apm.yml` and the generated `marketplace.json`, push, then consume it from `consumer-test`:
-
-   ```bash
-   apm marketplace add <your-handle>/team-marketplace
-   apm install team-skills@team-marketplace --target copilot
-   ```
-
-> ⚠️ Watch out: a `.gitignore` that excludes `*.json` will silently stop `marketplace.json` from being committed.
-
-The Copilot Academy lab [APM in 60 Minutes](https://copilot-academy.github.io/labs/apm-in-60-minutes) walks through the same flow in more depth, plus the monorepo layout.
-
-## Stretch C: declare an MCP server
-
-In `consumer-test`, add an MCP server to `dependencies.mcp` in `apm.yml`, replacing the empty `mcp: []` that `apm init` wrote. This one needs no API key:
-
-```yaml
-dependencies:
-  mcp:
-    - io.github.ChromeDevTools/chrome-devtools-mcp
-```
-
-Keep the existing `apm:` list as it is. Run `apm install --target copilot`, then `git status` to see which file APM wrote for Copilot. APM blocks transitive MCP servers unless they are declared, which is why it is listed explicitly.
-
-Find other servers with `apm mcp search <word>`. Many ask for a token or API key during install; do not paste a real secret into a lab repo.
-
 ## Challenges
 
 1. **Break it on purpose.** Put the skill at the repo root instead of under `.apm/`, push, and reinstall in the consumer. What is missing, and did anything warn you?
 2. **Two consumers, one source.** Install the same tag in a third repo with `--target claude`. What differs?
-3. **Gate a pull request.** Write a GitHub Actions job that runs `apm audit --ci`, then `apm install --frozen`, in that order (see the warning above).
+3. **Gate a pull request.** Order matters: `apm audit --ci` first, then `apm install --frozen`.
 
 ## Further reading
 

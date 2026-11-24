@@ -84,12 +84,22 @@ img{max-width:100%;height:auto;border-radius:8px;background:#fff}
 marked.use({ tokenizer: { del() { return undefined; } } });
 const PAGES = [
   { id: "overview", title: "Overview", file: "README.md", track: false },
-  { id: "p1", title: "1. Setup and consume", file: "labs/01-setup-and-consume.md", min: 20, track: true },
-  { id: "p2", title: "2. Author a shared set", file: "labs/02-author.md", min: 25, track: true },
-  { id: "p3", title: "3. Publish and share", file: "labs/03-publish-and-share.md", min: 20, track: true },
-  { id: "p4", title: "4. Verify and secure", file: "labs/04-verify-and-secure.md", min: 15, track: true },
-  { id: "p5", title: "5. Wrap-up and stretch", file: "labs/05-wrap-up-and-stretch.md", min: 10, track: true },
-  { id: "appendix", title: "Appendix", file: "labs/appendix.md", track: false },
+  { id: "p1", title: "1. Install and consume", file: "labs/01-setup-and-consume.md", min: 15, track: true },
+  { id: "p2", title: "2. Author a shared set", file: "labs/02-author.md", min: 15, track: true },
+  { id: "p3", title: "3. Publish and share", file: "labs/03-publish-and-share.md", min: 15, track: true },
+  { id: "p4", title: "4. Verify and secure", file: "labs/04-verify-and-secure.md", min: 10, track: true },
+  { id: "p5", title: "5. Stretch", file: "labs/05-wrap-up-and-stretch.md", min: 30, track: true },
+  { id: "appendix", title: "Appendix", file: "labs/appendix.md", track: false, sep: true },
+  { id: "d-tools", title: "Get the tools", file: "docs/get-the-tools.md", track: false },
+  { id: "d-install", title: "Install APM", file: "docs/install-apm.md", track: false },
+  { id: "d-daily", title: "Using APM day to day", file: "docs/daily-use.md", track: false },
+  { id: "d-how", title: "How APM works", file: "docs/how-apm-works.md", track: false },
+  { id: "d-author", title: "Authoring primitives", file: "docs/authoring-primitives.md", track: false },
+  { id: "d-security", title: "Security model", file: "docs/security-model.md", track: false },
+  { id: "d-arch", title: "The full picture", file: "docs/architecture.md", track: false },
+  { id: "d-market", title: "Marketplace", file: "docs/marketplace.md", track: false },
+  { id: "d-mcp", title: "MCP servers", file: "docs/mcp.md", track: false },
+  { id: "d-ci", title: "CI gate", file: "docs/ci-gate.md", track: false },
 ];
 const KEY = "apm-lab-progress";
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
@@ -106,7 +116,7 @@ function renderNav(activeId) {
   document.getElementById("links").innerHTML = PAGES.map((p) => {
     const cls = [p.id === activeId ? "active" : "", state[p.id] ? "done" : ""].join(" ");
     const dot = p.track ? `<span class="dot">${state[p.id] ? "✓" : ""}</span>` : "";
-    return `${p.id === "appendix" ? '<div class="sep"></div>' : ""}<a class="${cls}" href="#${p.id}"${p.id === activeId ? ' aria-current="page"' : ""}>${dot}${p.title}${p.min ? `<span class="min">${p.min}m</span>` : ""}</a>`;
+    return `${p.sep ? '<div class="sep"></div>' : ""}<a class="${cls}" href="#${p.id}"${p.id === activeId ? ' aria-current="page"' : ""}>${dot}${p.title}${p.min ? `<span class="min">${p.min}m</span>` : ""}</a>`;
   }).join("");
 }
 
