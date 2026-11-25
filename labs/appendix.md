@@ -1,6 +1,6 @@
 # Appendix: troubleshooting and cheat sheet
 
-[Back to overview](../README.md)
+[Back to overview](../README.md) · Setup help: [get the tools](../docs/get-the-tools.md), [install APM](../docs/install-apm.md)
 
 ## Troubleshooting
 
